@@ -73,7 +73,7 @@ func (*server) CheckUncheck(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.To
 					Id:          todoList[i].GetId(),
 					Title:       todoList[i].GetTitle(),
 					Description: todoList[i].GetDescription(),
-					Done:        !todoList[i].GetDone(),
+					Done:        todoList[i].GetDone(),
 				},
 			}
 			return res, nil
