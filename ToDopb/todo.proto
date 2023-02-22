@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package todo;
+option go_package="/ToDopb";
+
+message ToDo {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  bool done = 4;
+}
+
+message ToDoResponse {
+  ToDo todo = 1;
+}
+
+message empty {}
+
+service ToDoService {
+  rpc CreateToDo (ToDo) returns (ToDoResponse);
+  rpc ListToDos (empty) returns (stream ToDoResponse);
+}

@@ -1,0 +1,1 @@
+protoc ToDopb/todo.proto --go-grpc_out=. --go_out=.
