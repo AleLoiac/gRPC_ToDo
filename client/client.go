@@ -33,6 +33,10 @@ func main() {
 	doUnaryId(c, reader)
 
 	doServerStreaming(c)
+
+	doUnaryDelete(c, reader)
+
+	doServerStreaming(c)
 }
 
 func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
@@ -107,4 +111,25 @@ func doUnaryId(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 		log.Fatalf("Error while calling CheckUncheck RPC: %v", err)
 	}
 	log.Printf("Response from CheckUncheck: %v", res.GetTodo())
+}
+
+func doUnaryDelete(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
+	fmt.Println("Starting Unary RPC...")
+
+	var id string
+
+	fmt.Println("Delete a ToDo, insert id:")
+	id, _ = reader.ReadString('\n')
+	id = strings.TrimSpace(id)
+
+	req := &ToDopb.ToDoId{
+		Id: id,
+	}
+
+	//we call the function generated
+	_, err := c.DeleteToDo(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error while calling DeleteToDo RPC: %v", err)
+	}
+	log.Printf("Response from DeleteToDo: Deleted")
 }

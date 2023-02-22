@@ -83,6 +83,22 @@ func (*server) CheckUncheck(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.To
 	return nil, nil
 }
 
+func (*server) DeleteToDo(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.Empty, error) {
+	fmt.Printf("DeleteToDo function is invoked with %v\n", req)
+	id := req.GetId()
+
+	for i := range todoList {
+		if id == todoList[i].GetId() {
+			todoList = append(todoList[:i], todoList[i+1:]...)
+			res := &ToDopb.Empty{}
+			fmt.Println("Todo deleted")
+			return res, nil
+		}
+	}
+	fmt.Println("Id not found")
+	return nil, nil
+}
+
 func main() {
 	fmt.Println("Server started...")
 
