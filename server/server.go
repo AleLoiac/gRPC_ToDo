@@ -52,10 +52,35 @@ func (*server) ListToDos(req *ToDopb.Empty, stream ToDopb.ToDoService_ListToDosS
 				Done:        todoList[i].GetDone(),
 			},
 		}
-		stream.Send(res)
+		err := stream.Send(res)
+		if err != nil {
+			return err
+		}
 		time.Sleep(500 * time.Millisecond)
 	}
 	return nil
+}
+
+func (*server) CheckUncheck(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.ToDoResponse, error) {
+	fmt.Printf("CheckUncheck function is invoked with %v\n", req)
+	id := req.GetId()
+
+	for i := range todoList {
+		if id == todoList[i].GetId() {
+			todoList[i].Done = !todoList[i].GetDone()
+			res := &ToDopb.ToDoResponse{
+				Todo: &ToDopb.ToDo{
+					Id:          todoList[i].GetId(),
+					Title:       todoList[i].GetTitle(),
+					Description: todoList[i].GetDescription(),
+					Done:        !todoList[i].GetDone(),
+				},
+			}
+			return res, nil
+		}
+	}
+	fmt.Println("Id not found")
+	return nil, nil
 }
 
 func main() {

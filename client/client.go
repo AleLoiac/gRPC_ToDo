@@ -26,6 +26,11 @@ func main() {
 	c := ToDopb.NewToDoServiceClient(cc)
 
 	doUnary(c, reader)
+	doUnary(c, reader)
+
+	doServerStreaming(c)
+
+	doUnaryId(c, reader)
 
 	doServerStreaming(c)
 }
@@ -57,7 +62,7 @@ func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	//we call the function generated
 	res, err := c.CreateToDo(context.Background(), req)
 	if err != nil {
-		log.Fatalf("Error while calling Greet RPC: %v", err)
+		log.Fatalf("Error while calling CreateToDo RPC: %v", err)
 	}
 	log.Printf("Response from CreateToDo: %v", res.GetTodo())
 }
@@ -81,4 +86,25 @@ func doServerStreaming(c ToDopb.ToDoServiceClient) {
 		}
 		log.Printf("Listing ToDos: %v", msg.GetTodo())
 	}
+}
+
+func doUnaryId(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
+	fmt.Println("Starting Unary RPC...")
+
+	var id string
+
+	fmt.Println("Check or Uncheck a ToDo, insert id:")
+	id, _ = reader.ReadString('\n')
+	id = strings.TrimSpace(id)
+
+	req := &ToDopb.ToDoId{
+		Id: id,
+	}
+
+	//we call the function generated
+	res, err := c.CheckUncheck(context.Background(), req)
+	if err != nil {
+		log.Fatalf("Error while calling CheckUncheck RPC: %v", err)
+	}
+	log.Printf("Response from CheckUncheck: %v", res.GetTodo())
 }

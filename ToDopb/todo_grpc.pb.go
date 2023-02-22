@@ -24,6 +24,7 @@ const _ = grpc.SupportPackageIsVersion7
 type ToDoServiceClient interface {
 	CreateToDo(ctx context.Context, in *ToDo, opts ...grpc.CallOption) (*ToDoResponse, error)
 	ListToDos(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ToDoService_ListToDosClient, error)
+	CheckUncheck(ctx context.Context, in *ToDoId, opts ...grpc.CallOption) (*ToDoResponse, error)
 }
 
 type toDoServiceClient struct {
@@ -75,12 +76,22 @@ func (x *toDoServiceListToDosClient) Recv() (*ToDoResponse, error) {
 	return m, nil
 }
 
+func (c *toDoServiceClient) CheckUncheck(ctx context.Context, in *ToDoId, opts ...grpc.CallOption) (*ToDoResponse, error) {
+	out := new(ToDoResponse)
+	err := c.cc.Invoke(ctx, "/todo.ToDoService/CheckUncheck", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // ToDoServiceServer is the server API for ToDoService service.
 // All implementations must embed UnimplementedToDoServiceServer
 // for forward compatibility
 type ToDoServiceServer interface {
 	CreateToDo(context.Context, *ToDo) (*ToDoResponse, error)
 	ListToDos(*Empty, ToDoService_ListToDosServer) error
+	CheckUncheck(context.Context, *ToDoId) (*ToDoResponse, error)
 	mustEmbedUnimplementedToDoServiceServer()
 }
 
@@ -93,6 +104,9 @@ func (UnimplementedToDoServiceServer) CreateToDo(context.Context, *ToDo) (*ToDoR
 }
 func (UnimplementedToDoServiceServer) ListToDos(*Empty, ToDoService_ListToDosServer) error {
 	return status.Errorf(codes.Unimplemented, "method ListToDos not implemented")
+}
+func (UnimplementedToDoServiceServer) CheckUncheck(context.Context, *ToDoId) (*ToDoResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CheckUncheck not implemented")
 }
 func (UnimplementedToDoServiceServer) mustEmbedUnimplementedToDoServiceServer() {}
 
@@ -146,6 +160,24 @@ func (x *toDoServiceListToDosServer) Send(m *ToDoResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _ToDoService_CheckUncheck_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ToDoId)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ToDoServiceServer).CheckUncheck(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/todo.ToDoService/CheckUncheck",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ToDoServiceServer).CheckUncheck(ctx, req.(*ToDoId))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // ToDoService_ServiceDesc is the grpc.ServiceDesc for ToDoService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -156,6 +188,10 @@ var ToDoService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateToDo",
 			Handler:    _ToDoService_CreateToDo_Handler,
+		},
+		{
+			MethodName: "CheckUncheck",
+			Handler:    _ToDoService_CheckUncheck_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

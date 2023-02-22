@@ -16,7 +16,12 @@ message ToDoResponse {
 
 message empty {}
 
+message ToDoId {
+  string id = 1;
+}
+
 service ToDoService {
   rpc CreateToDo (ToDo) returns (ToDoResponse);
   rpc ListToDos (empty) returns (stream ToDoResponse);
+  rpc CheckUncheck (ToDoId) returns (ToDoResponse);
 }
