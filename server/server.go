@@ -7,6 +7,7 @@ import (
 	"google.golang.org/grpc"
 	"log"
 	"net"
+	"strconv"
 	"time"
 )
 
@@ -16,12 +17,16 @@ type server struct {
 
 var todoList []*ToDopb.ToDo
 
+var serial int
+
 func (*server) CreateToDo(ctx context.Context, req *ToDopb.ToDo) (*ToDopb.ToDoResponse, error) {
 	fmt.Printf("Create function is invoked with %v\n", req)
-	id := req.GetId()
+	id := strconv.Itoa(serial)
 	title := req.GetTitle()
 	description := req.GetDescription()
 	done := req.GetDone()
+
+	serial++
 
 	newTodo := &ToDopb.ToDo{
 		Id:          id,

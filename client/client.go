@@ -42,11 +42,7 @@ func main() {
 func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	fmt.Println("Starting Unary RPC...")
 
-	var id, title, desc string
-
-	fmt.Println("Create new ToDo, insert id:")
-	id, _ = reader.ReadString('\n')
-	id = strings.TrimSpace(id)
+	var title, desc string
 
 	fmt.Println("Create new ToDo, write a title:")
 	title, _ = reader.ReadString('\n')
@@ -57,7 +53,6 @@ func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	desc = strings.TrimSpace(desc)
 
 	req := &ToDopb.ToDo{
-		Id:          id,
 		Title:       title,
 		Description: desc,
 		Done:        false,
