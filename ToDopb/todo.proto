@@ -25,4 +25,5 @@ service ToDoService {
   rpc ListToDos (empty) returns (stream ToDoResponse);
   rpc CheckUncheck (ToDoId) returns (ToDoResponse);
   rpc DeleteToDo (ToDoId) returns (empty);
+
 }

@@ -25,21 +25,21 @@ func main() {
 
 	c := ToDopb.NewToDoServiceClient(cc)
 
-	doUnary(c, reader)
-	doUnary(c, reader)
+	doUnaryCreate(c, reader)
+	doUnaryCreate(c, reader)
 
-	doServerStreaming(c)
+	doServerStreamingList(c)
 
-	doUnaryId(c, reader)
+	doUnaryCheck(c, reader)
 
-	doServerStreaming(c)
+	doServerStreamingList(c)
 
 	doUnaryDelete(c, reader)
 
-	doServerStreaming(c)
+	doServerStreamingList(c)
 }
 
-func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
+func doUnaryCreate(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	fmt.Println("Starting Unary RPC...")
 
 	var title, desc string
@@ -66,7 +66,7 @@ func doUnary(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	log.Printf("Response from CreateToDo: %v", res.GetTodo())
 }
 
-func doServerStreaming(c ToDopb.ToDoServiceClient) {
+func doServerStreamingList(c ToDopb.ToDoServiceClient) {
 	fmt.Println("Starting Server Streaming RPC...")
 
 	req := &ToDopb.Empty{}
@@ -87,7 +87,7 @@ func doServerStreaming(c ToDopb.ToDoServiceClient) {
 	}
 }
 
-func doUnaryId(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
+func doUnaryCheck(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	fmt.Println("Starting Unary RPC...")
 
 	var id string
