@@ -3,6 +3,11 @@ syntax = "proto3";
 package todo;
 option go_package="/ToDopb";
 
+message NewToDo {
+  string title = 1;
+  string description = 2;
+}
+
 message ToDo {
   string id = 1;
   string title = 2;
@@ -21,9 +26,8 @@ message ToDoId {
 }
 
 service ToDoService {
-  rpc CreateToDo (ToDo) returns (ToDoResponse);
+  rpc CreateToDo (NewToDo) returns (ToDoResponse);
   rpc ListToDos (empty) returns (stream ToDoResponse);
   rpc CheckUncheck (ToDoId) returns (ToDoResponse);
   rpc DeleteToDo (ToDoId) returns (empty);
-
 }

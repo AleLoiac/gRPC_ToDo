@@ -22,7 +22,7 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ToDoServiceClient interface {
-	CreateToDo(ctx context.Context, in *ToDo, opts ...grpc.CallOption) (*ToDoResponse, error)
+	CreateToDo(ctx context.Context, in *NewToDo, opts ...grpc.CallOption) (*ToDoResponse, error)
 	ListToDos(ctx context.Context, in *Empty, opts ...grpc.CallOption) (ToDoService_ListToDosClient, error)
 	CheckUncheck(ctx context.Context, in *ToDoId, opts ...grpc.CallOption) (*ToDoResponse, error)
 	DeleteToDo(ctx context.Context, in *ToDoId, opts ...grpc.CallOption) (*Empty, error)
@@ -36,7 +36,7 @@ func NewToDoServiceClient(cc grpc.ClientConnInterface) ToDoServiceClient {
 	return &toDoServiceClient{cc}
 }
 
-func (c *toDoServiceClient) CreateToDo(ctx context.Context, in *ToDo, opts ...grpc.CallOption) (*ToDoResponse, error) {
+func (c *toDoServiceClient) CreateToDo(ctx context.Context, in *NewToDo, opts ...grpc.CallOption) (*ToDoResponse, error) {
 	out := new(ToDoResponse)
 	err := c.cc.Invoke(ctx, "/todo.ToDoService/CreateToDo", in, out, opts...)
 	if err != nil {
@@ -99,7 +99,7 @@ func (c *toDoServiceClient) DeleteToDo(ctx context.Context, in *ToDoId, opts ...
 // All implementations must embed UnimplementedToDoServiceServer
 // for forward compatibility
 type ToDoServiceServer interface {
-	CreateToDo(context.Context, *ToDo) (*ToDoResponse, error)
+	CreateToDo(context.Context, *NewToDo) (*ToDoResponse, error)
 	ListToDos(*Empty, ToDoService_ListToDosServer) error
 	CheckUncheck(context.Context, *ToDoId) (*ToDoResponse, error)
 	DeleteToDo(context.Context, *ToDoId) (*Empty, error)
@@ -110,7 +110,7 @@ type ToDoServiceServer interface {
 type UnimplementedToDoServiceServer struct {
 }
 
-func (UnimplementedToDoServiceServer) CreateToDo(context.Context, *ToDo) (*ToDoResponse, error) {
+func (UnimplementedToDoServiceServer) CreateToDo(context.Context, *NewToDo) (*ToDoResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateToDo not implemented")
 }
 func (UnimplementedToDoServiceServer) ListToDos(*Empty, ToDoService_ListToDosServer) error {
@@ -136,7 +136,7 @@ func RegisterToDoServiceServer(s grpc.ServiceRegistrar, srv ToDoServiceServer) {
 }
 
 func _ToDoService_CreateToDo_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ToDo)
+	in := new(NewToDo)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -148,7 +148,7 @@ func _ToDoService_CreateToDo_Handler(srv interface{}, ctx context.Context, dec f
 		FullMethod: "/todo.ToDoService/CreateToDo",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ToDoServiceServer).CreateToDo(ctx, req.(*ToDo))
+		return srv.(ToDoServiceServer).CreateToDo(ctx, req.(*NewToDo))
 	}
 	return interceptor(ctx, in, info, handler)
 }

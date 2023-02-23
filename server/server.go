@@ -5,6 +5,7 @@ import (
 	"gRPC_ToDo/ToDopb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"log"
 	"net"
 	"strconv"
@@ -19,12 +20,12 @@ var todoList []*ToDopb.ToDo
 
 var serial int
 
-func (*server) CreateToDo(ctx context.Context, req *ToDopb.ToDo) (*ToDopb.ToDoResponse, error) {
+func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToDoResponse, error) {
 	fmt.Printf("Create function is invoked with %v\n", req)
 	id := strconv.Itoa(serial)
 	title := req.GetTitle()
 	description := req.GetDescription()
-	done := req.GetDone()
+	done := false
 
 	serial++
 
@@ -116,6 +117,8 @@ func main() {
 
 	s := grpc.NewServer()
 	ToDopb.RegisterToDoServiceServer(s, &server{})
+
+	reflection.Register(s)
 
 	if err := s.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)

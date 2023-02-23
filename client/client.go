@@ -52,10 +52,9 @@ func doUnaryCreate(c ToDopb.ToDoServiceClient, reader *bufio.Reader) {
 	desc, _ = reader.ReadString('\n')
 	desc = strings.TrimSpace(desc)
 
-	req := &ToDopb.ToDo{
+	req := &ToDopb.NewToDo{
 		Title:       title,
 		Description: desc,
-		Done:        false,
 	}
 
 	//we call the function generated
