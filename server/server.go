@@ -56,6 +56,25 @@ func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToD
 		return nil, status.Error(codes.Internal, err.Error())
 	}
 
+	gettodo := &ToDopb.ToDo{}
+
+	err2 := db.View(func(txn *badger.Txn) error {
+		data, err3 := txn.Get([]byte(id))
+		data.Value(func(val []byte) error {
+			err = proto.Unmarshal(val, gettodo)
+			if err != nil {
+				return err
+			}
+			return nil
+		})
+		//need to transform data in bytes
+		fmt.Println(gettodo)
+		return err3
+	})
+	if err2 != nil {
+		return nil, status.Error(codes.Internal, err2.Error())
+	}
+
 	todoList = append(todoList, newTodo)
 
 	fmt.Println(todoList)
