@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"gRPC_ToDo/ToDopb"
+	"github.com/dgraph-io/badger/v3"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
 	"google.golang.org/grpc/status"
+	"google.golang.org/protobuf/proto"
 	"log"
 	"net"
 	"strconv"
@@ -43,7 +45,19 @@ func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToD
 		Todo: newTodo,
 	}
 
+	err := db.Update(func(txn *badger.Txn) error {
+		data, err := proto.Marshal(newTodo)
+		if err != nil {
+			return err
+		}
+		return txn.Set([]byte(id), data)
+	})
+	if err != nil {
+		return nil, status.Error(codes.Internal, err.Error())
+	}
+
 	todoList = append(todoList, newTodo)
+
 	fmt.Println(todoList)
 	return res, nil
 }
@@ -105,8 +119,14 @@ func (*server) DeleteToDo(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.Empt
 	return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Cannot find todo with id: %v", req.GetId()))
 }
 
+var db *badger.DB
+
 func main() {
 	fmt.Println("Server started...")
+
+	db, _ = badger.Open(badger.DefaultOptions("/tmp/badger"))
+
+	defer db.Close()
 
 	todoList = make([]*ToDopb.ToDo, 0)
 
