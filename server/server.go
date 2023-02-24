@@ -5,7 +5,9 @@ import (
 	"gRPC_ToDo/ToDopb"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/reflection"
+	"google.golang.org/grpc/status"
 	"log"
 	"net"
 	"strconv"
@@ -85,8 +87,7 @@ func (*server) CheckUncheck(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.To
 			return res, nil
 		}
 	}
-	fmt.Println("Id not found")
-	return nil, nil
+	return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Cannot find todo with id: %v", req.GetId()))
 }
 
 func (*server) DeleteToDo(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.Empty, error) {
@@ -101,8 +102,7 @@ func (*server) DeleteToDo(ctx context.Context, req *ToDopb.ToDoId) (*ToDopb.Empt
 			return res, nil
 		}
 	}
-	fmt.Println("Id not found")
-	return nil, nil
+	return nil, status.Errorf(codes.NotFound, fmt.Sprintf("Cannot find todo with id: %v", req.GetId()))
 }
 
 func main() {
