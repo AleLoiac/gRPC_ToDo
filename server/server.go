@@ -58,6 +58,7 @@ func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToD
 
 	gettodo := &ToDopb.ToDo{}
 
+	// delete and create new project
 	err2 := db.View(func(txn *badger.Txn) error {
 		data, err3 := txn.Get([]byte(id))
 		data.Value(func(val []byte) error {
