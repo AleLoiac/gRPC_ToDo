@@ -27,7 +27,6 @@ func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToD
 	id := strconv.Itoa(serial)
 	title := req.GetTitle()
 	description := req.GetDescription()
-	done := false
 
 	serial++
 
@@ -35,7 +34,7 @@ func (*server) CreateToDo(ctx context.Context, req *ToDopb.NewToDo) (*ToDopb.ToD
 		Id:          id,
 		Title:       title,
 		Description: description,
-		Done:        done,
+		Done:        false,
 	}
 
 	//sending a response, look at the structure in the generated code
